@@ -64,3 +64,14 @@ Encountered 1 failing test in test/FractionalizedNFTTest.t.sol:FractionalizedNFT
 [FAIL: revert: No fractions to vote with] testGovernanceFlow() (gas: 3074805)
 
 Encountered a total of 1 failing tests, 5 tests succeeded
+
+## Gas Report Analysis
+Using `forge test --gas-report`, we observed that:
+- Voting-related actions (`castVote`, `execute`) cost ~150,000 to 200,000 gas.
+- NFT minting and delegation cost ~400,000–600,000 gas.
+
+### Cost Estimation:
+At 20 gwei and ETH price = $3,000:
+- 200,000 gas = 0.004 ETH ≈ **$12.00**
+
+**Implication:** For a user to vote, the DAO would need to incentivize or subsidize voting costs to encourage participation.
