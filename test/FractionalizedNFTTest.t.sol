@@ -90,6 +90,5 @@ contract FractionalizedNFTTest is Test {
         assertTrue(info.executed, "Proposal should be executed");
     }
     
-    
 }
 
