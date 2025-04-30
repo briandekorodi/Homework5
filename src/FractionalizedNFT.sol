@@ -198,6 +198,7 @@ contract FractionalizedNFT is ERC721Enumerable, Ownable {
         
         // Add delegated fractions
         _fractions[tokenId][to].amount = _fractions[tokenId][to].amount + amount;
+        _fractions[tokenId][to].owner = to;
         
         // Update voting power
         _updateVotingPower(msg.sender);
@@ -206,26 +207,29 @@ contract FractionalizedNFT is ERC721Enumerable, Ownable {
         emit FractionDelegated(tokenId, msg.sender, to, amount);
     }
     
-    /**
+        /**
      * @dev Cast a vote using fractions of an NFT
      * @param proposalId The ID of the proposal
      * @param tokenId The ID of the NFT
      * This function marks fractions as voted and prevents further delegation
      */
-    function castVote(uint256 proposalId, uint256 tokenId) external {
+    function castVote(uint256 proposalId, uint256 tokenId) external returns (uint256) {
         require(tokenExists(tokenId), "Token does not exist");
         require(!_hasVotedOnProposal[msg.sender][proposalId], "Already voted on this proposal");
-        
+
         Fraction storage fraction = _fractions[tokenId][msg.sender];
         require(fraction.amount > 0, "No fractions to vote with");
         require(!fraction.hasVoted, "Fractions already used for voting");
-        
+
         fraction.hasVoted = true;
         fraction.lastVoteTimestamp = block.timestamp;
         _hasVotedOnProposal[msg.sender][proposalId] = true;
-        
+
         emit VoteCast(msg.sender, proposalId, fraction.amount);
+
+        return fraction.amount; // return the number of votes
     }
+
     
     /**
      * @dev Execute rage quit, burning all owned fractions for eligible members
